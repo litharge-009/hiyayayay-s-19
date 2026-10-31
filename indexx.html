@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 19th Birthday, My Love</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600&family=Sacramento&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blush: {
+                            50: '#fff0f3',
+                            100: '#ffe5ec',
+                            200: '#ffc2d1',
+                            300: '#ffb3c1',
+                            400: '#ff8fa3',
+                            500: '#ff758f',
+                        },
+                        charcoal: {
+                            800: '#2b2b2b',
+                            900: '#1a1a1a',
+                            950: '#0f0f0f',
+                        },
+                        gold: '#d4af37'
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['"Montserrat"', 'sans-serif'],
+                        script: ['"Sacramento"', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base styles & Smooth transitions */
+        body {
+            background-color: #0f0f0f;
+            color: #ffe5ec;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(26, 26, 26, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 179, 193, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card-hover:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(255, 179, 193, 0.4);
+            box-shadow: 0 12px 40px 0 rgba(255, 117, 143, 0.25);
+        }
+
+        /* Background Particle Canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff758f;
+            border-radius: 3px;
+        }
+
+        /* Interactive Cake CSS */
+        .cake {
+            position: relative;
+            width: 200px;
+            height: 140px;
+            margin: 0 auto;
+        }
+
+        .plate {
+            width: 240px;
+            height: 16px;
+            background: #ffc2d1;
+            border-radius: 10px;
+            position: absolute;
+            bottom: -10px;
+            left: -20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .layer {
+            position: absolute;
+            display: block;
+            width: 200px;
+            height: 50px;
+            border-radius: 12px;
+        }
+
+        .layer-bottom {
+            bottom: 0;
+            background: linear-gradient(to right, #2b2b2b, #3a2a2f, #2b2b2b);
+        }
+
+        .layer-middle {
+            bottom: 40px;
+            background: linear-gradient(to right, #ff8fa3, #ffb3c1, #ff8fa3);
+        }
+
+        .layer-top {
+            bottom: 80px;
+            background: linear-gradient(to right, #ffe5ec, #fff0f3, #ffe5ec);
+            border-radius: 12px 12px 8px 8px;
+        }
+
+        .icing {
+            top: 0;
+            background-color: #fff0f3;
+            width: 200px;
+            height: 20px;
+            border-radius: 10px 10px 0 0;
+            position: absolute;
+        }
+
+        .drip {
+            width: 20px;
+            height: 15px;
+            background-color: #fff0f3;
+            position: absolute;
+            border-radius: 0 0 10px 10px;
+        }
+
+        /* Candle Flame Animation */
+        .candle {
+            background: repeating-linear-gradient(45deg, #ff758f, #ff758f 5px, #fff0f3 5px, #fff0f3 10px);
+            width: 12px;
+            height: 45px;
+            position: absolute;
+            top: 25px;
+            left: 94px;
+            border-radius: 3px;
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .flame {
+            position: absolute;
+            background-color: orange;
+            opacity: 0.9;
+            box-shadow: 0 0 12px 4px orange, 0 -10px 20px 6px yellow;
+            width: 14px;
+            height: 22px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: -24px;
+            left: -1px;
+            animation: flicker 1.2s infinite alternate;
+            transform-origin: center bottom;
+        }
+
+        .flame.off {
+            display: none;
+        }
+
+        .smoke {
+            position: absolute;
+            top: -30px;
+            left: 2px;
+            width: 8px;
+            height: 8px;
+            background: rgba(200, 200, 200, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .smoke-active {
+            animation: smokeRise 2s ease-out forwards;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); }
+            50% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+            100% { transform: scale(0.95) rotate(-1deg); }
+        }
+
+        @keyframes smokeRise {
+            0% { opacity: 0.8; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-40px) scale(3); }
+        }
+
+        /* Gift Box Unwrapping Effects */
+        .gift-box {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .gift-box:hover {
+            transform: scale(1.05);
+        }
+
+        .gift-body {
+            position: absolute;
+            bottom: 0;
+            width: 160px;
+            height: 120px;
+            background: linear-gradient(135deg, #ff758f, #ff8fa3);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(255, 117, 143, 0.3);
+        }
+
+        .gift-lid {
+            position: absolute;
+            top: 25px;
+            left: -8px;
+            width: 176px;
+            height: 35px;
+            background: #ffb3c1;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 5;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .gift-ribbon-v {
+            position: absolute;
+            left: 70px;
+            width: 20px;
+            height: 100%;
+            background: #fff0f3;
+        }
+
+        .gift-ribbon-h {
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            height: 20px;
+            background: #fff0f3;
+        }
+
+        .gift-bow {
+            position: absolute;
+            top: -15px;
+            left: 60px;
+            width: 40px;
+            height: 25px;
+            background: #fff0f3;
+            border-radius: 50% 50% 0 0;
+            z-index: 6;
+        }
+
+        .gift-open .gift-lid {
+            transform: translateY(-120px) rotate(-15deg);
+            opacity: 0;
+        }
+
+        /* Polaroid Memory Flip Effect */
+        .polaroid-card {
+            perspective: 1000px;
+            height: 320px;
+        }
+
+        .polaroid-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .polaroid-card.flipped .polaroid-inner {
+            transform: rotateY(180deg);
+        }
+
+        .polaroid-front, .polaroid-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 8px;
+        }
+
+        .polaroid-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Envelope Wax Seal Animation */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+
+        .wax-seal {
+            background: radial-gradient(circle, #ff4d6d 0%, #c9184a 100%);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.4);
+            transition: all 0.5s ease;
+        }
+
+        .wax-seal:hover {
+            transform: scale(1.1);
+        }
+
+        /* Custom Tape styling */
+        .washi-tape {
+            position: absolute;
+            top: -10px;
+            left: 30%;
+            width: 70px;
+            height: 22px;
+            background: rgba(255, 240, 243, 0.5);
+            backdrop-filter: blur(2px);
+            transform: rotate(-3deg);
+            z-index: 20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- Ambient Particle Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Header & Music Control Bar -->
+    <header class="relative z-30 w-full px-6 py-4 flex justify-between items-center max-w-5xl mx-auto">
+        <div id="brandLogo" class="cursor-pointer flex items-center space-x-2" onclick="navigateTo('introMenu')">
+            <span class="font-serif italic text-xl tracking-wider text-blush-300">N&S</span>
+            <span class="text-xs tracking-widest text-blush-200 uppercase opacity-60">| 19th Birthday</span>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <!-- Audio Toggle Button -->
+            <button id="audioToggleBtn" onclick="toggleAudio()" class="glass-card p-2.5 rounded-full text-blush-200 hover:text-white transition-all duration-300 flex items-center justify-center border border-blush-300/30">
+                <i data-lucide="music" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hidden Audio Player (User can edit src) -->
+    <audio id="bgAudio" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Main Content Dynamic Container -->
+    <main class="relative z-20 flex-grow flex items-center justify-center p-4 md:p-8">
+
+        <!-- ========================================== -->
+        <!-- SECTION 0: INTRO & MENU HUB                -->
+        <!-- ========================================== -->
+        <section id="introMenu" class="w-full max-w-4xl mx-auto text-center transition-all duration-700 ease-out">
+            <!-- Step 1: Initial Minimal Emotional Intro -->
+            <div id="introTextStep" class="space-y-6 transition-opacity duration-1000 my-12">
+                <h2 class="font-serif italic text-3xl md:text-5xl text-blush-100 tracking-wide font-light">
+                    "I made something for you..."
+                </h2>
+                <p id="typedSubtext" class="text-blush-200/80 font-sans text-sm md:text-base max-w-md mx-auto min-h-[48px] leading-relaxed">
+                    <!-- Typed dynamically -->
+                </p>
+                <div class="pt-6">
+                    <button onclick="revealMenuHub()" class="glass-card px-8 py-3.5 rounded-full text-blush-100 font-sans tracking-widest text-xs uppercase hover:bg-blush-500/20 transition-all duration-500 border border-blush-300/40 shadow-lg shadow-blush-500/10">
+                        Hii Gwar I love you so muchh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: The 4 Option Cards Menu (Initially Hidden) -->
+            <div id="menuCardsHub" class="hidden opacity-0 transform translate-y-8 transition-all duration-1000 space-y-8 py-4">
+                <div class="space-y-2">
+                    <span class="text-xs uppercase tracking-widest text-blush-400 font-semibold">Special Edition</span>
+                    <h1 id="menuRecipientHeading" class="font-serif text-4xl md:text-6xl text-white font-bold tracking-tight">
+                        Happy 19th Birthday, <span class="italic text-blush-300 font-light" id="menuRecipientName">My Love</span>
+                    </h1>
+                    <p class="text-blush-200/70 text-xs md:text-sm font-sans max-w-lg mx-auto">
+                        Explore each card below created specifically for your special day.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 pt-4">
+                    <!-- Card 1 -->
+                    <div onclick="navigateTo('happyBirthday')" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer flex flex-col items-center justify-between text-center group border border-blush-300/20">
+                        <div class="p-4 rounded-full bg-blush-500/10 group-hover:bg-blush-500/20 transition-colors mb-4 text-blush-300">
+                            <i data-lucide="cake" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-serif text-2xl text-white font-semibold mb-1">Happy Birthday Hiyayayayaya</h3>
+                        <p class="text-xs text-blush-200/60 font-sans">Blow out your 19th virtual candles & make a wish.</p>
+                        <span class="mt-6 text-xs text-blush-400 group-hover:translate-x-1 transition-transform flex items-center gap-1 font-medium">
+                            Enter Page <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                        </span>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div onclick="navigateTo('surprise')" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer flex flex-col items-center justify-between text-center group border border-blush-300/20">
+                        <div class="p-4 rounded-full bg-blush-500/10 group-hover:bg-blush-500/20 transition-colors mb-4 text-blush-300">
+                            <i data-lucide="gift" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-serif text-2xl text-white font-semibold mb-1">Surprise ✨</h3>
+                        <p class="text-xs text-blush-200/60 font-sans">A mystery box waiting for you to unwrap.</p>
+                        <span class="mt-6 text-xs text-blush-400 group-hover:translate-x-1 transition-transform flex items-center gap-1 font-medium">
+                            Unwrap Gift <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                        </span>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div onclick="navigateTo('memories')" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer flex flex-col items-center justify-between text-center group border border-blush-300/20">
+                        <div class="p-4 rounded-full bg-blush-500/10 group-hover:bg-blush-500/20 transition-colors mb-4 text-blush-300">
+                            <i data-lucide="camera" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-serif text-2xl text-white font-semibold mb-1">Our Memories 📸</h3>
+                        <p class="text-xs text-blush-200/60 font-sans">A visual journey through our favorite moments.</p>
+                        <span class="mt-6 text-xs text-blush-400 group-hover:translate-x-1 transition-transform flex items-center gap-1 font-medium">
+                            View Gallery <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                        </span>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div onclick="navigateTo('letter')" class="glass-card glass-card-hover p-6 rounded-2xl cursor-pointer flex flex-col items-center justify-between text-center group border border-blush-300/20">
+                        <div class="p-4 rounded-full bg-blush-500/10 group-hover:bg-blush-500/20 transition-colors mb-4 text-blush-300">
+                            <i data-lucide="mail" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="font-serif text-2xl text-white font-semibold mb-1">Birthday Letter 💌</h3>
+                        <p class="text-xs text-blush-200/60 font-sans">An intimate, sealed love note written for you.</p>
+                        <span class="mt-6 text-xs text-blush-400 group-hover:translate-x-1 transition-transform flex items-center gap-1 font-medium">
+                            Read Letter <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: HAPPY BIRTHDAY PAGE             -->
+        <!-- ========================================== -->
+        <section id="happyBirthday" class="hidden opacity-0 transform translate-y-6 transition-all duration-700 w-full max-w-3xl mx-auto text-center space-y-8 py-4">
+            <div class="space-y-3">
+                <span class="inline-block px-3 py-1 rounded-full bg-blush-500/10 text-blush-300 text-xs font-semibold tracking-widest uppercase border border-blush-300/20">
+                    Chapter I • Celebration
+                </span>
+                <h1 class="font-serif text-4xl md:text-6xl text-white font-bold">
+                    Happy 19th Birthday, <br class="md:hidden">
+                    <span class="italic text-blush-300 font-light" id="bdayRecipientName">My sweet little baby</span> 🎂
+                </h1>
+            </div>
+
+            <!-- Virtual 3D/CSS Cake Component -->
+            <div class="py-6">
+                <div class="cake">
+                    <div id="candle" class="candle" onclick="blowCandle()">
+                        <div id="flame" class="flame"></div>
+                        <div id="smoke" class="smoke"></div>
+                    </div>
+                    <div class="icing">
+                        <div class="drip" style="left: 10px;"></div>
+                        <div class="drip" style="left: 45px; height: 18px;"></div>
+                        <div class="drip" style="left: 90px; height: 12px;"></div>
+                        <div class="drip" style="left: 135px; height: 22px;"></div>
+                        <div class="drip" style="left: 170px; height: 14px;"></div>
+                    </div>
+                    <div class="layer layer-top"></div>
+                    <div class="layer layer-middle"></div>
+                    <div class="layer layer-bottom"></div>
+                    <div class="plate"></div>
+                </div>
+                <p id="candleInstruction" class="text-xs text-blush-300/80 mt-6 font-sans italic tracking-wide">
+                    ✨ Tap the candle flame to blow it out and make your 19th wish!
+                </p>
+            </div>
+
+            <!-- Dedicated Romantic Birthday Message -->
+            <div class="glass-card p-6 md:p-8 rounded-2xl max-w-xl mx-auto space-y-4 border border-blush-300/20 text-left">
+                <p class="font-serif text-lg md:text-xl text-blush-100 leading-relaxed italic" id="bdayShortMessage">
+                    "Nineteen look so stunning on you. Today is a celebration of the day the world got brighter, kinder, and infinitely more beautiful because you entered it."
+                </p>
+                <div class="pt-2 text-right">
+                    <span class="font-script text-2xl text-blush-400" id="bdaySignOff">Forever Yours, Always ❤️</span>
+                </div>
+            </div>
+
+            <!-- Back to Menu Button -->
+            <div>
+                <button onclick="navigateTo('introMenu')" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full glass-card text-xs uppercase tracking-widest text-blush-200 hover:text-white hover:bg-blush-500/20 transition-all border border-blush-300/30">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Navigation Hub
+                </button>
+            </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: SURPRISE PAGE                   -->
+        <!-- ========================================== -->
+        <section id="surprise" class="hidden opacity-0 transform translate-y-6 transition-all duration-700 w-full max-w-3xl mx-auto text-center space-y-8 py-4">
+            <div class="space-y-3">
+                <span class="inline-block px-3 py-1 rounded-full bg-blush-500/10 text-blush-300 text-xs font-semibold tracking-widest uppercase border border-blush-300/20">
+                    Chapter II • The Mystery Box
+                </span>
+                <h2 class="font-serif text-4xl md:text-5xl text-white font-bold">
+                    A Surprise Prepared Just For You ✨
+                </h2>
+                <p class="text-blush-200/70 text-xs md:text-sm max-w-md mx-auto">
+                    Touch the gift box below to untie the silk ribbon and reveal your 19th birthday gift coupons.
+                </p>
+            </div>
+
+            <!-- Interactive Wrapped Gift Box -->
+            <div class="py-6">
+                <div id="giftBox" class="gift-box" onclick="unwrapGift()">
+                    <div class="gift-bow"></div>
+                    <div class="gift-lid">
+                        <div class="gift-ribbon-v"></div>
+                    </div>
+                    <div class="gift-body">
+                        <div class="gift-ribbon-v"></div>
+                        <div class="gift-ribbon-h"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revealed Surprise Coupon Collection (Initially Hidden) -->
+            <div id="surpriseReveal" class="hidden opacity-0 transform translate-y-6 transition-all duration-1000 space-y-6">
+                <h3 class="font-serif text-2xl text-blush-200 italic">Your Birthday VIP Love Coupons 🎟️</h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto" id="couponsContainer">
+                    <!-- Coupons rendered via JS -->
+                </div>
+            </div>
+
+            <!-- Back to Menu Button -->
+            <div>
+                <button onclick="navigateTo('introMenu')" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full glass-card text-xs uppercase tracking-widest text-blush-200 hover:text-white hover:bg-blush-500/20 transition-all border border-blush-300/30">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Navigation Hub
+                </button>
+            </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- SECTION 3: OUR MEMORIES GALLERY            -->
+        <!-- ========================================== -->
+        <section id="memories" class="hidden opacity-0 transform translate-y-6 transition-all duration-700 w-full max-w-5xl mx-auto text-center space-y-8 py-4">
+            <div class="space-y-3">
+                <span class="inline-block px-3 py-1 rounded-full bg-blush-500/10 text-blush-300 text-xs font-semibold tracking-widest uppercase border border-blush-300/20">
+                    Chapter III • Time Capsule
+                </span>
+                <h2 class="font-serif text-4xl md:text-5xl text-white font-bold">
+                    Moments We’ve Treasured 📸
+                </h2>
+                <p class="text-blush-200/70 text-xs md:text-sm max-w-md mx-auto">
+                    Click any Polaroid to flip it and read the story behind the snapshot.
+                </p>
+            </div>
+
+            <!-- Polaroid Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 pt-4 text-left" id="polaroidGrid">
+                <!-- Dynamically Generated Polaroids -->
+            </div>
+
+            <!-- Back to Menu Button -->
+            <div class="pt-4">
+                <button onclick="navigateTo('introMenu')" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full glass-card text-xs uppercase tracking-widest text-blush-200 hover:text-white hover:bg-blush-500/20 transition-all border border-blush-300/30">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Navigation Hub
+                </button>
+            </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- SECTION 4: BIRTHDAY LETTER                 -->
+        <!-- ========================================== -->
+        <section id="letter" class="hidden opacity-0 transform translate-y-6 transition-all duration-700 w-full max-w-3xl mx-auto text-center space-y-8 py-4">
+            <div class="space-y-3">
+                <span class="inline-block px-3 py-1 rounded-full bg-blush-500/10 text-blush-300 text-xs font-semibold tracking-widest uppercase border border-blush-300/20">
+                    Chapter IV • From My Heart
+                </span>
+                <h2 class="font-serif text-4xl md:text-5xl text-white font-bold">
+                    A Letter For Your 19th Birthday 💌
+                </h2>
+            </div>
+
+            <!-- Envelope Wax Seal Cover -->
+            <div id="envelopeCover" class="envelope-wrapper py-8 cursor-pointer" onclick="openLetter()">
+                <div class="glass-card max-w-md mx-auto p-8 rounded-2xl border border-blush-300/30 relative flex flex-col items-center justify-center space-y-4">
+                    <div class="wax-seal w-16 h-16 rounded-full flex items-center justify-center text-white font-serif font-bold text-xl cursor-pointer">
+                        19
+                    </div>
+                    <p class="font-serif italic text-lg text-blush-100">Tap wax seal to open letter</p>
+                    <span class="text-xs text-blush-400 uppercase tracking-widest font-sans">Strictly Confidential</span>
+                </div>
+            </div>
+
+            <!-- Letter Content Sheet (Initially Hidden) -->
+            <div id="letterPaper" class="hidden opacity-0 transform translate-y-8 transition-all duration-1000 glass-card p-6 md:p-12 rounded-2xl max-w-2xl mx-auto border border-blush-300/30 text-left relative overflow-hidden">
+                <div class="washi-tape"></div>
+
+                <div class="flex justify-between items-center mb-8 border-b border-blush-300/20 pb-4">
+                    <span id="letterDate" class="text-xs uppercase tracking-widest text-blush-400 font-sans">NOVEMBER 2026</span>
+                    <span class="font-serif italic text-blush-200/60 text-sm">To My Dearest</span>
+                </div>
+
+                <!-- Letter Body Container with Typewriter/Fade Reveal -->
+                <div id="letterBodyText" class="font-serif text-lg md:text-xl text-blush-100 leading-relaxed space-y-4 font-light">
+                    <!-- Letter content inserted dynamically -->
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-blush-300/20 text-right space-y-1">
+                    <p class="text-xs uppercase tracking-widest text-blush-400 font-sans">With all my love,</p>
+                    <p id="letterSignOff" class="font-script text-3xl md:text-4xl text-blush-300">Your Favorite Person</p>
+                </div>
+            </div>
+
+            <!-- Back to Menu Button -->
+            <div>
+                <button onclick="navigateTo('introMenu')" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full glass-card text-xs uppercase tracking-widest text-blush-200 hover:text-white hover:bg-blush-500/20 transition-all border border-blush-300/30">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Navigation Hub
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Photo Lightbox Modal for Gallery -->
+    <div id="photoLightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4" onclick="closeLightbox()">
+        <div class="relative max-w-3xl w-full max-h-[90vh] flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="closeLightbox()" class="absolute -top-12 right-0 text-white hover:text-blush-300 transition-colors p-2">
+                <i data-lucide="x" class="w-8 h-8"></i>
+            </button>
+            <img id="lightboxImg" src="" alt="Memory Detail" class="max-h-[75vh] w-auto object-contain rounded-lg shadow-2xl border border-blush-300/20">
+            <p id="lightboxCaption" class="mt-4 font-serif italic text-lg text-blush-100 text-center"></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="relative z-20 py-6 text-center text-xs text-blush-300/40 font-sans tracking-widest uppercase">
+        Crafted with Love for her 19th Birthday • Forever & Always
+    </footer>
+
+    <!-- JavaScript Logic & Customizable Data -->
+    <script>
+        /* ====================================================================
+         * CONFIGURATION & CONSTANTS (Easily Edit Your Content Below)
+         * ==================================================================== */
+        const CONFIG = {
+            recipientName: "HIYAYAYA", // Girlfriend's Name
+            yourName: "SHAURYA",         // Your Name
+            birthdayDate: "NOVEMBER 1ST, 2026",
+
+            // Intro Subtext
+            introSubtext: "Nineteen years ago today, a meanace came into this world. I wanted to build something personal to mark your 19th year.",
+
+            // Short Message on Birthday Page
+            shortBirthdayMessage: "Nineteen looks so stunning on you. Today is a celebration of the day the world got brighter, kinder, and infinitely more beautiful because you entered it. Thank you for being my favorite person every single day.",
+
+            // Surprise Coupons
+            coupons: [
+                { title: "Unlimited Warm cozy Cuddles", code: "HUG-19-FOREVER", desc: "Redeemable anytime, anywhere, with no expiration date." },
+                { title: "Late Night Coffee & Stargazing", code: "STAR-NIGHT-01", desc: "A cozy evening outing under the stars with your favorite warm drink." },
+                { title: "Dinner at Your Favorite Spot", code: "FOODIE-DATE-99", desc: "You pick the restaurant, I take care of everything else." },
+                { title: "One Free Wish Granted", code: "MAGIC-WISH-19", desc: "Anything you want today, no questions asked!" }
+            ],
+
+            // Photo Memory Wall (Replace image URLs, captions, and dates)
+            memories: [
+                {
+                    image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=800&q=80",
+                    title: "Our First Sunset Walk",
+                    date: "Summer 2024",
+                    caption: "The evening I realized talking to you was the easiest thing in the world."
+                },
+                {
+                    image: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80",
+                    title: "Cozy Coffee Dates",
+                    date: "Autumn 2024",
+                    caption: "Lost in hours of conversation over iced lattes and warm pastries."
+                },
+                {
+                    image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80",
+                    title: "Spontaneous Adventures",
+                    date: "Spring 2025",
+                    caption: "Getting lost together and finding the sweetest little hidden spots."
+                },
+                {
+                    image: "https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&w=800&q=80",
+                    title: "Your Unfiltered Smile",
+                    date: "Always",
+                    caption: "My absolute favorite sight in the entire universe. Never stop smiling like this."
+                },
+                {
+                    image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80",
+                    title: "Late Night Laughs",
+                    date: "Winter 2025",
+                    caption: "Laughing until our cheeks hurt over the silly inside jokes only we get."
+                },
+                {
+                    image: "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?auto=format&fit=crop&w=800&q=80",
+                    title: "Celebrating You Today",
+                    date: "19th Birthday",
+                    caption: "Here’s to making a million more unforgettable memories together."
+                }
+            ],
+
+            // Long Birthday Letter Paragraphs
+            letterParagraphs: [
+                "My Dearest Hiyayayaya,",
+                "Happy 19th Birthday Hiyu, my baby, my love , I wanted to take a moment to remind you just how deeply loved and appreciated you are.",
+                "Over the time we’ve shared, you have brought so much warmth, comfort, and genuine joy into my life. Your kindness, your laughter, and the gentle way you view the world around you never cease to amaze me.",
+                "Nineteen is going to be a milestone year full of growth, new dreams, and exciting chapters. My biggest wish for you today is that you always feel as cherished as you truly are, and that you pursue every single dream with the confidence of knowing I’ll always be right here cheering for you.",
+                "Thank you for being my safe space, my best friend, and my greatest happiness.",
+                "Happy 19th Birthday, my love."
+            ]
+        };
+
+
+        /* ====================================================================
+         * DOM & STATE MANAGEMENT
+         * ==================================================================== */
+        let activeSectionId = 'introMenu';
+        let candleBlown = false;
+        let giftUnwrapped = false;
+        let letterOpened = false;
+        let audioPlaying = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Populate Config Content into DOM
+            document.getElementById('menuRecipientName').innerText = CONFIG.recipientName;
+            document.getElementById('bdayRecipientName').innerText = CONFIG.recipientName;
+            document.getElementById('bdayShortMessage').innerText = `"${CONFIG.shortBirthdayMessage}"`;
+            document.getElementById('bdaySignOff').innerText = `Forever Yours, ${CONFIG.yourName} ❤️`;
+            document.getElementById('letterSignOff').innerText = CONFIG.yourName;
+            document.getElementById('letterDate').innerText = CONFIG.birthdayDate;
+
+            // Render Dynamic Memories & Coupons
+            renderMemories();
+            renderCoupons();
+
+            // Initialize Lucide Icons
+            lucide.createIcons();
+
+            // Setup Ambient Particle Canvas Backdrop
+            initParticles();
+        });
+
+
+        /* ====================================================================
+         * NAVIGATION & PAGE TRANSITIONS
+         * ==================================================================== */
+        function navigateTo(targetId) {
+            if (targetId === activeSectionId) return;
+
+            const currentEl = document.getElementById(activeSectionId);
+            const targetEl = document.getElementById(targetId);
+
+            if (!currentEl || !targetEl) return;
+
+            // Fade Out Current
+            currentEl.classList.add('opacity-0', 'translate-y-6');
+            
+            setTimeout(() => {
+                currentEl.classList.add('hidden');
+                
+                // Show & Fade In Target
+                targetEl.classList.remove('hidden');
+                // Force Reflow
+                void targetEl.offsetWidth;
+                
+                targetEl.classList.remove('opacity-0', 'translate-y-6');
+                activeSectionId = targetId;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 500);
+        }
+
+        function revealMenuHub() {
+            const introStep = document.getElementById('introTextStep');
+            const menuHub = document.getElementById('menuCardsHub');
+
+            introStep.classList.add('opacity-0', '-translate-y-4');
+            setTimeout(() => {
+                introStep.classList.add('hidden');
+                menuHub.classList.remove('hidden');
+                void menuHub.offsetWidth;
+                menuHub.classList.remove('opacity-0', 'translate-y-8');
+            }, 600);
+        }
+
+
+        /* ====================================================================
+         * AUDIO TOGGLE FUNCTIONALITY
+         * ==================================================================== */
+        function toggleAudio() {
+            const audio = document.getElementById('bgAudio');
+            const btn = document.getElementById('audioToggleBtn');
+
+            if (!audioPlaying) {
+                audio.play().then(() => {
+                    audioPlaying = true;
+                    btn.classList.add('bg-blush-500/30', 'border-blush-400');
+                    btn.innerHTML = '<i data-lucide="volume-2" class="w-4 h-4 text-blush-300"></i>';
+                    lucide.createIcons();
+                }).catch(err => console.log('Audio playback prevented by browser:', err));
+            } else {
+                audio.pause();
+                audioPlaying = false;
+                btn.classList.remove('bg-blush-500/30', 'border-blush-400');
+                btn.innerHTML = '<i data-lucide="music" class="w-4 h-4 text-blush-200"></i>';
+                lucide.createIcons();
+            }
+        }
+
+
+        /* ====================================================================
+         * SECTION 1: CANDLE BLOWOUT & CONFETTI
+         * ==================================================================== */
+        function blowCandle() {
+            if (candleBlown) return;
+            candleBlown = true;
+
+            const flame = document.getElementById('flame');
+            const smoke = document.getElementById('smoke');
+            const instruction = document.getElementById('candleInstruction');
+
+            flame.classList.add('off');
+            smoke.classList.add('smoke-active');
+
+            instruction.innerText = "✨ Wish received! Happy 19th Birthday, my love! ❤️";
+            instruction.classList.add('text-blush-400', 'font-semibold');
+
+            // Trigger Heart & Sparkle Confetti Explosion
+            const count = 200;
+            const defaults = { origin: { y: 0.7 } };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+                colors: ['#ff758f', '#ffb3c1', '#ffffff']
+            });
+            fire(0.2, {
+                spread: 60,
+                colors: ['#ffe5ec', '#ff4d6d']
+            });
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8
+            });
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                colors: ['#ffd1dc', '#ffffff']
+            });
+        }
+
+
+        /* ====================================================================
+         * SECTION 2: SURPRISE GIFT UNWRAPPING
+         * ==================================================================== */
+        function unwrapGift() {
+            if (giftUnwrapped) return;
+            giftUnwrapped = true;
+
+            const box = document.getElementById('giftBox');
+            const revealContainer = document.getElementById('surpriseReveal');
+
+            box.classList.add('gift-open');
+
+            // Burst confetti around gift box
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff758f', '#ffc2d1', '#fff0f3']
+            });
+
+            setTimeout(() => {
+                revealContainer.classList.remove('hidden');
+                void revealContainer.offsetWidth;
+                revealContainer.classList.remove('opacity-0', 'translate-y-6');
+            }, 700);
+        }
+
+        function renderCoupons() {
+            const container = document.getElementById('couponsContainer');
+            container.innerHTML = CONFIG.coupons.map((coupon, i) => `
+                <div class="glass-card p-5 rounded-xl text-left border border-blush-300/20 hover:border-blush-300/50 transition-all flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[10px] uppercase tracking-widest text-blush-400 font-semibold">VIP Pass #0${i+1}</span>
+                        <h4 class="font-serif text-xl text-white font-semibold mt-1">${coupon.title}</h4>
+                        <p class="text-xs text-blush-200/70 mt-1 font-sans">${coupon.desc}</p>
+                    </div>
+                    <div class="pt-2 border-t border-blush-300/10 flex justify-between items-center text-[10px] font-mono text-blush-300">
+                        <span>CODE: ${coupon.code}</span>
+                        <span class="text-blush-400/80 uppercase font-sans">Non-Expiring</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+
+        /* ====================================================================
+         * SECTION 3: MEMORY POLAROID WALL & LIGHTBOX
+         * ==================================================================== */
+        function renderMemories() {
+            const grid = document.getElementById('polaroidGrid');
+            grid.innerHTML = CONFIG.memories.map((mem, idx) => `
+                <div class="polaroid-card cursor-pointer" onclick="toggleFlip(this)">
+                    <div class="polaroid-inner">
+                        <!-- Front Face -->
+                        <div class="polaroid-front glass-card p-4 flex flex-col justify-between border border-blush-300/30 shadow-xl">
+                            <div class="washi-tape"></div>
+                            <div class="relative w-full h-48 rounded overflow-hidden mb-3 bg-charcoal-900">
+                                <img src="${mem.image}" alt="${mem.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80'">
+                            </div>
+                            <div class="flex justify-between items-center px-1">
+                                <h4 class="font-serif text-lg text-white font-semibold truncate">${mem.title}</h4>
+                                <span class="text-[10px] uppercase font-sans tracking-wider text-blush-400">${mem.date}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] text-blush-200/50 mt-2 px-1">
+                                <span>Tap to flip 🔄</span>
+                                <button onclick="openLightbox(event, '${mem.image}', '${mem.title}')" class="text-blush-300 hover:text-white uppercase font-sans tracking-widest flex items-center gap-1">
+                                    Zoom <i data-lucide="maximize-2" class="w-3 h-3"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Back Face -->
+                        <div class="polaroid-back glass-card p-6 flex flex-col justify-center items-center text-center border border-blush-300/40 bg-charcoal-950/90">
+                            <span class="text-xs uppercase font-sans tracking-widest text-blush-400 mb-2">${mem.date}</span>
+                            <h4 class="font-serif text-2xl text-white italic mb-4">"${mem.title}"</h4>
+                            <p class="font-serif text-base text-blush-100/90 leading-relaxed italic">${mem.caption}</p>
+                            <span class="mt-6 text-[10px] text-blush-300/50 uppercase tracking-widest font-sans">Tap to flip back</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleFlip(cardEl) {
+            cardEl.classList.toggle('flipped');
+        }
+
+        function openLightbox(e, imgSrc, caption) {
+            e.stopPropagation(); // Prevent card flipping when clicking zoom
+            const modal = document.getElementById('photoLightbox');
+            const img = document.getElementById('lightboxImg');
+            const cap = document.getElementById('lightboxCaption');
+
+            img.src = imgSrc;
+            cap.innerText = caption;
+
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('photoLightbox');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+
+        /* ====================================================================
+         * SECTION 4: BIRTHDAY LETTER REVEAL
+         * ==================================================================== */
+        function openLetter() {
+            if (letterOpened) return;
+            letterOpened = true;
+
+            const cover = document.getElementById('envelopeCover');
+            const paper = document.getElementById('letterPaper');
+            const bodyTextContainer = document.getElementById('letterBodyText');
+
+            cover.classList.add('opacity-0', 'scale-95');
+            
+            setTimeout(() => {
+                cover.classList.add('hidden');
+                paper.classList.remove('hidden');
+                void paper.offsetWidth;
+                paper.classList.remove('opacity-0', 'translate-y-8');
+
+                // Render paragraphs smoothly
+                bodyTextContainer.innerHTML = CONFIG.letterParagraphs.map(p => `<p>${p}</p>`).join('');
+            }, 500);
+        }
+
+
+        /* ====================================================================
+         * AMBIENT PARTICLE BACKDROP (Soft Stars & Pink Hearts)
+         * ==================================================================== */
+        function initParticles() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = Array.from({ length: 45 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 2 + 1,
+                speedY: Math.random() * 0.4 + 0.1,
+                speedX: (Math.random() - 0.5) * 0.2,
+                opacity: Math.random() * 0.6 + 0.2,
+                type: Math.random() > 0.7 ? 'heart' : 'dot'
+            }));
+
+            function drawHeart(x, y, size, opacity) {
+                ctx.save();
+                ctx.globalAlpha = opacity;
+                ctx.fillStyle = '#ff758f';
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.bezierCurveTo(x - size, y - size, x - size * 1.5, y + size / 3, x, y + size);
+                ctx.bezierCurveTo(x + size * 1.5, y + size / 3, x + size, y - size, x, y);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                particles.forEach(p => {
+                    p.y -= p.speedY;
+                    p.x += p.speedX;
+
+                    if (p.y < -10) {
+                        p.y = height + 10;
+                        p.x = Math.random() * width;
+                    }
+
+                    if (p.type === 'heart') {
+                        drawHeart(p.x, p.y, p.size * 2, p.opacity);
+                    } else {
+                        ctx.save();
+                        ctx.globalAlpha = p.opacity;
+                        ctx.fillStyle = '#ffe5ec';
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+    </script>
+</body>
+</html>
