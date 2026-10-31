@@ -944,7 +944,7 @@
                         <div class="polaroid-front glass-card p-4 flex flex-col justify-between border border-blush-300/30 shadow-xl">
                             <div class="washi-tape"></div>
                             <div class="relative w-full h-48 rounded overflow-hidden mb-3 bg-charcoal-900">
-                                <img src="${mem.image}" alt="${mem.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80'">
+                               <img src="${mem.image}" alt="${mem.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="console.error('IMAGE FAILED:', this.src)">
                             </div>
                             <div class="flex justify-between items-center px-1">
                                 <h4 class="font-serif text-lg text-white font-semibold truncate">${mem.title}</h4>
